@@ -36,7 +36,11 @@
 	<script type="text/javascript" src="js/words-demo.js"></script>
 	<script type="text/javascript">
 	window.addEventListener('load', function() {
-		//document.getElementById('video').currentTime = 7;
+		//skip first 7 seconds of video
+		var video = document.getElementById('video');
+		if (video && video.duration > 7) {
+			video.currentTime = 7;
+		}
 	});
 	</script>
 </html>
