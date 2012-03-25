@@ -1,5 +1,4 @@
 // PLUGIN: words
-// http://www.youtube.com/watch?v=OclVb7Y8_30#t=1m56s
 
 (function (Popcorn) {
 
