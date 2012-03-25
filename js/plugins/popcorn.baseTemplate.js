@@ -3,11 +3,8 @@
 "use strict";
 
 	Popcorn.basePlugin( 'baseTemplate' , function(options, base) {
-		var popcorn,
-			media;
-		
-		popcorn = this;
-		video = popcorn.media;
+		var popcorn = this,
+			media = popcorn.media;
 
 		return {
 			start: function( event, options ) {
