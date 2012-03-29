@@ -83,7 +83,8 @@
 			setupFn, startFn, frameFn, endFn, teardownFn,
 			me = this, instanceId, allEvents,
 			basePopcorn = BasePopcorn(popcorn),
-			definition;
+			animatedProperties = {},
+			definition, i;
 		
 		function getCallbackFunction(fn) {
 			if (fn && typeof fn === 'string') {
@@ -94,11 +95,33 @@
 				return fn;
 			}
 		}
+
+		function updateAnimations(fraction) {
+			var i, prop, val;
+			for (i in animatedProperties) {
+				prop = animatedProperties[i];
+				val = prop.from + (prop.to - prop.from) * fraction;
+				if (prop.unit) {
+					val += prop.unit;
+				}
+				me.options[i] = val;
+				if (prop.callback) {
+					prop.callback.call(me, val);
+				}
+			}
+		}
 		
 		//just being helpful...
-		this.options = options;
 		this.popcorn = popcorn;
 		this.pluginName = basePlugin.name;
+
+		//keep a separate copy of options
+		this.options = {};
+		for (i in options) {
+			if (options.hasOwnProperty(i)) {
+				this.options[i] = options[i];
+			}
+		}
 
 		//get target
 		if (typeof options.target === 'string') {
@@ -184,6 +207,70 @@
 			return this.container;
 		};
 
+		/*
+		animate method will animate any given properties of the `options` object
+		if `callback` option is provided, will call that on every frame
+		*/
+		this.animate = function(name, opts) {
+			var prop,
+				opt,
+				from, to, unit,
+				regex = /(\-?\d+(\.\d*)?)(.*)/;
+
+			if (!name || !options[name]) {
+				return false;
+			}
+
+			opt = options[name];
+
+			from = regex.exec(opt.from);
+			if (from) {
+				unit = from[3];
+				from = parseFloat(from[1]);
+			}
+			to = regex.exec(opt.to);
+			if (to) {
+				to = parseFloat(to[1]);
+			}
+
+			if (from === null && to === null) {
+				me.options[name] = opt;
+				return null;
+			}
+			if (from === false) {
+				me.options[null] = opt.to;
+				return;
+			}
+			if (opt.to === null || from === to) {
+				me.options[name] = opt.from;
+				return;
+			}
+
+			if (typeof opts === 'function') {
+				opts = {
+					callback: opts
+				};
+			} else if (!opts) {
+				opts = {};
+			}
+
+			prop = {
+				name: name,
+				from: from,
+				to: to,
+				unit: unit
+			};
+
+			if (typeof opts.callback === 'function') {
+				prop.callback = opts.callback;
+			}
+
+			//todo: specify tween method.
+
+			animatedProperties[name] = prop;
+			return true;
+		};
+
 		//run plugin function to get setup, etc.
 		//todo: validate that 'plugin' is a function
 		//todo: try/catch all event functions
@@ -195,7 +282,7 @@
 		if (!definition.start) {
 			definition.start = this.nop;
 		}
-*/		
+*/
 		setupFn = definition._setup;
 		if (typeof setupFn === 'function') {
 			definition._setup = function(options) {
@@ -225,6 +312,7 @@
 			definition.start = function(event, options) {
 				current = true;
 				started = true;
+				updateAnimations.call(me, 0);
 				startFn.call(me, event, options);
 				if (typeof me.onStart === 'function') {
 					try {
@@ -238,6 +326,7 @@
 			definition.start = function(event, options) {
 				current = true;
 				started = true;
+				updateAnimations.call(me, 0);
 				if (typeof me.onStart === 'function') {
 					try {
 						me.onStart(options);
@@ -252,6 +341,7 @@
 		if (typeof frameFn === 'function') {
 			definition.frame = function(event, options, time) {
 				if (started) {
+					updateAnimations.call(me, (time - me.options.start) / (me.options.end - me.options.start));
 					frameFn.call(me, event, options, time);
 					if (typeof me.onFrame === 'function') {
 						try {
@@ -264,11 +354,14 @@
 			};
 		} else {
 			definition.frame = function(event, options, time) {
-				if (started && typeof me.onFrame === 'function') {
-					try {
-						me.onFrame(options);
-					} catch (e) {
-						logError(e);
+				if (started) {
+					updateAnimations.call(me, (time - me.options.start) / (me.options.end - me.options.start));
+					if (typeof me.onFrame === 'function') {
+						try {
+							me.onFrame(options);
+						} catch (e) {
+							logError(e);
+						}
 					}
 				}
 			};
@@ -278,6 +371,7 @@
 		if (typeof endFn === 'function') {
 			definition.end = function(event, options) {
 				if (started) {
+					updateAnimations.call(me, 1);
 					if (typeof me.onEnd === 'function') {
 						try {
 							me.onEnd.call(me, options);
@@ -292,11 +386,14 @@
 			};
 		} else {
 			definition.end = function(event, options) {
-				if (started && typeof me.onEnd === 'function') {
-					try {
-						me.onEnd(options);
-					} catch (e) {
-						logError(e);
+				if (started) {
+					updateAnimations.call(me, 1);
+					if (typeof me.onEnd === 'function') {
+						try {
+							me.onEnd(options);
+						} catch (e) {
+							logError(e);
+						}
 					}
 				}
 				started = false;
@@ -338,7 +435,7 @@
 					delete me.container;
 				}
 			};
-		}	
+		}
 	};
 
 

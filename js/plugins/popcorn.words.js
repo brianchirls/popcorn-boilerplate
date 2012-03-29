@@ -21,6 +21,7 @@
 		popcorn = this;
 		video = popcorn.media;
 
+		//todo: add stylesheet with basePlugin
 		if (!styleSheet) {
 			styleSheet = document.createElement('style');
 			styleSheet.setAttribute('type', 'text/css');
@@ -36,6 +37,7 @@
 
 		container.style.cssText = options.style || '';
 
+		//todo: do all of this positioning stuff with basePlugin
 		i = options.top;
 		if (i || i === 0) {
 			if (!isNaN(i)) {
@@ -71,6 +73,20 @@
 			container.style.bottom = i;
 			container.style.position = 'absolute';
 		}
+
+		base.animate('top', function(val) {
+			container.style.top = val;
+		});
+		base.animate('left', function(val) {
+			container.style.left = val;
+		});
+		base.animate('right', function(val) {
+			container.style.right = val;
+		});
+		base.animate('bottom', function(val) {
+			container.style.bottom = val;
+		});
+
 		
 		if (options.align) {
 			container.style.textAlign = options.align;
@@ -100,6 +116,7 @@
 			textContainer = container;
 		}
 
+		//todo: localize
 		text = base.toArray(options.text, /[\n\r]/);
 		for (i = 0; i < text.length; i++) {
 			if (i) {
@@ -121,4 +138,4 @@
 			}
 		};
 	});
-})( Popcorn );
+}( Popcorn ));
