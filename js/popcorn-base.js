@@ -152,6 +152,7 @@
 				}
 			}
 			allEvents.splice(i + 1, 0, me);
+			me.allEvents = allEvents;
 		}());
 
 		//events
