@@ -13,7 +13,7 @@ This is the simplest imaginable collection of files needed to get started with [
 - A blank script.js file. This is where you put your page logic
 - The latest *release* version of [Popcorn.js](https://github.com/mozilla/popcorn-js)
 - A few plugin boilerplate scripts. Use these as a starting point to write your Popcorn plugins ([popcorn.baseTemplate.js](https://github.com/brianchirls/popcorn-boilerplate/blob/master/js/plugins/popcorn.baseTemplate.js) is my favorite)
-- [popcorn-base](https://github.com/brianchirls/popcorn-) - a plugin wrapper designed to make
+- [popcorn-base](https://github.com/brianchirls/popcorn-base) - a plugin wrapper designed to make
 it much, much easier to write great plugins
 
 ## Examples
