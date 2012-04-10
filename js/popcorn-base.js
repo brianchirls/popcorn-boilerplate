@@ -53,7 +53,7 @@
 		BasePopcorn.plugins[pluginName] = basePlugin;
 	};
 	
-	PopcornBasePlugin = function(pluginName, plugin) {
+	PopcornBasePlugin = function(pluginName, plugin, manifest) {
 		var definition,
 			me = this;
 
@@ -70,7 +70,7 @@
 			return event.definition();
 		};
 		
-		Popcorn.plugin(pluginName, definition);
+		Popcorn.plugin(pluginName, definition, manifest);
 
 		//register plugin with our own list
 		BasePopcorn.register(pluginName, this);
@@ -582,8 +582,8 @@
 	// non-static methods
 
 	//export to global Popcorn object
-	Popcorn.basePlugin = function(name, plugin) {
-		var bp = new PopcornBasePlugin(name, plugin);
+	Popcorn.basePlugin = function(name, plugin, manifest) {
+		var bp = new PopcornBasePlugin(name, plugin, manifest);
 		//return bp;
 	};
 	
