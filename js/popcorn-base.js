@@ -405,7 +405,7 @@
 		teardownFn = definition._teardown;
 		if (typeof teardownFn === 'function') {
 			definition._teardown = function(options) {
-				var parent;
+				var parent, i;
 				if (typeof me.onTeardown === 'function') {
 					try {
 						me.onTeardown.call(me, options);
@@ -414,15 +414,21 @@
 					}
 				}
 				teardownFn.call(me, options);
-				if (me.container && me.container.parentNode) {
+				if (me.container) {
 					parent = me.container.parentNode;
-					parent.removeChild(me.container);
+					if (parent) {
+						parent.removeChild(me.container);
+					}
 					delete me.container;
+				}
+				i = allEvents.indexOf(me);
+				if (i <= 0) {
+					allEvents.splice(i, 1);
 				}
 			};
 		} else {
 			definition._teardown = function(options) {
-				var parent;
+				var parent, i;
 				if (typeof me.onTeardown === 'function') {
 					try {
 						me.onTeardown(options);
@@ -430,10 +436,16 @@
 						logError(e);
 					}
 				}
-				if (me.container && me.container.parentNode) {
+				if (me.container) {
 					parent = me.container.parentNode;
-					parent.removeChild(me.container);
+					if (parent) {
+						parent.removeChild(me.container);
+					}
 					delete me.container;
+				}
+				i = allEvents.indexOf(me);
+				if (i <= 0) {
+					allEvents.splice(i, 1);
 				}
 			};
 		}
