@@ -28,6 +28,7 @@
 			styleSheet.appendChild(
 				document.createTextNode(
 					'.popcorn-words { display: none; }\n' +
+					'.popcorn-words > a { color: inherit; }\n' +
 					'.popcorn-words.active { display: block; }\n'
 			));
 			document.head.appendChild(styleSheet);
@@ -37,60 +38,7 @@
 
 		container.style.cssText = options.style || '';
 
-		//todo: do all of this positioning stuff with basePlugin
-		i = options.top;
-		if (i || i === 0) {
-			if (!isNaN(i)) {
-				i += 'px';
-			}
-			container.style.top = i;
-			container.style.position = 'absolute';
-		}
-
-		i = options.left;
-		if (i || i === 0) {
-			if (!isNaN(i)) {
-				i += 'px';
-			}
-			container.style.left = i;
-			container.style.position = 'absolute';
-		}
-		
-		i = options.right;
-		if (i || i === 0) {
-			if (!isNaN(i)) {
-				i += 'px';
-			}
-			container.style.right = i;
-			container.style.position = 'absolute';
-		}
-		
-		i = options.bottom;
-		if (i || i === 0) {
-			if (!isNaN(i)) {
-				i += 'px';
-			}
-			container.style.bottom = i;
-			container.style.position = 'absolute';
-		}
-
-		base.animate('top', function(val) {
-			container.style.top = val;
-		});
-		base.animate('left', function(val) {
-			container.style.left = val;
-		});
-		base.animate('right', function(val) {
-			container.style.right = val;
-		});
-		base.animate('bottom', function(val) {
-			container.style.bottom = val;
-		});
-
-		
-		if (options.align) {
-			container.style.textAlign = options.align;
-		}
+		base.animate(base.container);
 		
 		if (options.classes) {
 			base.addClass(container, options.classes);
