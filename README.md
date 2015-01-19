@@ -40,7 +40,7 @@ https://github.com/brianchirls/popcorn-base/
 ### Popcorn Maker
 A graphical interface to Popcorn.js
 
-http://mozillapopcorn.org/popcorn-maker/
+https://popcorn.webmaker.org
 
 ### Popcorn Community
 
